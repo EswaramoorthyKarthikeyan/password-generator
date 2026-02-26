@@ -1,0 +1,92 @@
+{
+	"name": "password-generator",
+	"version": "1.0.0",
+	"description": "Enterprise-grade cryptographically secure password/passphrase generator",
+	"keywords": [
+		"typescript",
+		"password-generator",
+		"passphrase",
+		"diceware",
+		"crypto",
+		"cli",
+		"security",
+		"enterprise",
+		"hibp",
+		"entropy",
+		"cspnrg"
+	],
+	"sideEffects": false,
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"homepage": "https://github.com/eswarkarthik95/password-generator",
+	"bugs": {
+		"url": "https://github.com/eswarkarthik95/password-generator/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/eswarkarthik95/password-generator.git"
+	},
+	"license": "MIT",
+	"author": "Eswaramoorthy Karthiekeyan <eswarkarthik95@gmail.com>",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"unpkg": "./dist/index.global.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"bin": {
+		"pwd-gen": "./dist/cli.js"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"clean": "rimraf dist",
+		"build": "tsup",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"format": "prettier --write .",
+		"lint": "eslint .",
+		"audit": "pnpm audit --audit-level=high",
+		"docs": "typedoc --out docs src/index.ts",
+		"cli": "tsx src/cli.ts",
+		"precommit": "pnpm run format && pnpm run lint && pnpm run test && pnpm run build",
+		"prepare": "husky",
+		"release": "changeset version && pnpm install",
+		"publish": "pnpm build && changeset publish"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.29.8",
+		"@commitlint/config-conventional": "^20.3.1",
+		"@eslint/js": "^9.39.2",
+		"@playwright/test": "^1.58.0",
+		"@types/node": "^25.0.10",
+		"@vitest/coverage-v8": "^4.0.18",
+		"commitlint": "^20.3.1",
+		"eslint": "^9.39.2",
+		"husky": "^9.1.7",
+		"prettier": "3.8.1",
+		"rimraf": "^6.1.2",
+		"tsup": "^8.5.1",
+		"tsx": "^4.21.0",
+		"typedoc": "^0.28.16",
+		"typescript": "^5.7.3",
+		"typescript-eslint": "^8.53.1",
+		"vitest": "^4.0.18"
+	},
+	"dependencies": {
+		"@clack/prompts": "^0.11.0",
+		"clipboardy": "^5.1.0",
+		"commander": "^14.0.2"
+	}
+}

@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Secure Password Generator | Enterprise Demo</title>
+		<style>
+			body {
+				font-family:
+					system-ui,
+					-apple-system,
+					sans-serif;
+				max-width: 600px;
+				margin: 2rem auto;
+				padding: 0 1rem;
+				line-height: 1.5;
+				background: #f4f4f9;
+				color: #333;
+			}
+			.card {
+				background: white;
+				padding: 2.5rem;
+				border-radius: 16px;
+				box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+				border: 1px solid #e1e4e8;
+			}
+			h1 {
+				margin-top: 0;
+				color: #1a1a1a;
+				font-size: 1.75rem;
+				text-align: center;
+				margin-bottom: 2rem;
+			}
+			.result-container {
+				margin-bottom: 2rem;
+				position: relative;
+			}
+			.result {
+				background: #f8f9fa;
+				padding: 1.25rem;
+				border-radius: 8px;
+				font-family:
+					"SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+					monospace;
+				font-size: 1.4rem;
+				word-break: break-all;
+				min-height: 2rem;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border: 2px solid #e1e4e8;
+				color: #007bff;
+				transition: all 0.2s;
+				cursor: pointer;
+			}
+			.result:hover {
+				background: #fff;
+				border-color: #007bff;
+			}
+			.strength-bar {
+				height: 6px;
+				background: #eee;
+				border-radius: 3px;
+				margin-top: 10px;
+				overflow: hidden;
+			}
+			.strength-fill {
+				height: 100%;
+				width: 0;
+				transition:
+					width 0.3s,
+					background 0.3s;
+			}
+			.status-row {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-top: 8px;
+			}
+			.strength-text {
+				font-size: 0.85rem;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+			.pwned-status {
+				font-size: 0.85rem;
+				font-weight: 600;
+				padding: 2px 8px;
+				border-radius: 4px;
+			}
+			.controls {
+				display: grid;
+				gap: 1.5rem;
+			}
+			.row {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+			label {
+				font-weight: 500;
+				font-size: 0.95rem;
+			}
+			input[type="range"] {
+				flex: 1;
+				margin: 0 15px;
+				cursor: pointer;
+			}
+			.val-badge {
+				background: #007bff;
+				color: white;
+				padding: 2px 8px;
+				border-radius: 4px;
+				font-size: 0.8rem;
+				min-width: 20px;
+				text-align: center;
+			}
+			.btn-group {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1rem;
+			}
+			button {
+				border: none;
+				padding: 1rem;
+				border-radius: 8px;
+				font-size: 1rem;
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.2s;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			.btn-primary {
+				background: #1a1a1a;
+				color: white;
+			}
+			.btn-primary:hover {
+				background: #333;
+				transform: translateY(-1px);
+			}
+			.btn-secondary {
+				background: #fff;
+				color: #1a1a1a;
+				border: 2px solid #1a1a1a;
+			}
+			.btn-secondary:hover {
+				background: #f4f4f9;
+			}
+			button:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+			.footer {
+				text-align: center;
+				margin-top: 2rem;
+				font-size: 0.8rem;
+				color: #6a737d;
+			}
+			.copy-hint {
+				position: absolute;
+				top: -25px;
+				right: 0;
+				font-size: 0.7rem;
+				color: #28a745;
+				opacity: 0;
+				transition: opacity 0.2s;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="card">
+			<h1>🔐 Secure Gen</h1>
+
+			<div class="result-container">
+				<div id="copyHint" class="copy-hint">Copied!</div>
+				<div id="result" class="result" title="Click to copy">
+					••••••••••••••••
+				</div>
+				<div class="strength-bar">
+					<div id="strengthFill" class="strength-fill"></div>
+				</div>
+				<div class="status-row">
+					<div id="strengthText" class="strength-text">Ready</div>
+					<div id="pwnedStatus" class="pwned-status"></div>
+				</div>
+			</div>
+
+			<div class="controls">
+				<div class="row">
+					<label>Length</label>
+					<input
+						type="range"
+						id="length"
+						min="8"
+						max="64"
+						value="16"
+					/>
+					<span id="lengthVal" class="val-badge">16</span>
+				</div>
+				<div class="row">
+					<label>Special Characters</label>
+					<input type="checkbox" id="special" checked />
+				</div>
+				<div class="row">
+					<label>Exclude Similar</label>
+					<input type="checkbox" id="excludeSimilar" />
+				</div>
+				<div class="btn-group">
+					<button id="generate" class="btn-primary">Generate</button>
+					<button id="checkPwned" class="btn-secondary" disabled>
+						Check Leaks
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer">
+			Enterprise Edition • Privacy-First (k-Anonymity)
+		</div>
+
+		<script src="../dist/index.global.js"></script>
+		<script>
+			const { PasswordGenerator, checkPwned } = PasswordGen;
+
+			const lengthInput = document.getElementById("length");
+			const lengthVal = document.getElementById("lengthVal");
+			const specialInput = document.getElementById("special");
+			const excludeInput = document.getElementById("excludeSimilar");
+			const generateBtn = document.getElementById("generate");
+			const checkBtn = document.getElementById("checkPwned");
+			const resultDiv = document.getElementById("result");
+			const strengthFill = document.getElementById("strengthFill");
+			const strengthText = document.getElementById("strengthText");
+			const pwnedStatus = document.getElementById("pwnedStatus");
+			const copyHint = document.getElementById("copyHint");
+
+			let currentPassword = "";
+
+			lengthInput.oninput = () =>
+				(lengthVal.textContent = lengthInput.value);
+
+			const updateUI = (result) => {
+				currentPassword = result.password;
+				resultDiv.textContent = currentPassword;
+				strengthText.textContent = `${result.strength} (${result.entropy} bits)`;
+				pwnedStatus.textContent = "";
+				pwnedStatus.style.background = "transparent";
+				checkBtn.disabled = false;
+				checkBtn.textContent = "Check Leaks";
+
+				const config = {
+					"Very Strong": { width: "100%", color: "#28a745" },
+					Strong: { width: "75%", color: "#17a2b8" },
+					Medium: { width: "50%", color: "#ffc107" },
+					Weak: { width: "25%", color: "#dc3545" }
+				};
+
+				const state = config[result.strength];
+				strengthFill.style.width = state.width;
+				strengthFill.style.background = state.color;
+				strengthText.style.color = state.color;
+				resultDiv.style.borderColor = state.color;
+			};
+
+			generateBtn.onclick = () => {
+				const result = PasswordGenerator.generateFull({
+					length: parseInt(lengthInput.value),
+					isSpecial: specialInput.checked,
+					excludeSimilar: excludeInput.checked
+				});
+				updateUI(result);
+			};
+
+			checkBtn.onclick = async () => {
+				checkBtn.disabled = true;
+				checkBtn.textContent = "Checking...";
+				const count = await checkPwned(currentPassword);
+
+				if (count > 0) {
+					pwnedStatus.textContent = `🚨 LEAKED ${count.toLocaleString()} TIMES`;
+					pwnedStatus.style.color = "white";
+					pwnedStatus.style.background = "#dc3545";
+				} else {
+					pwnedStatus.textContent = "✅ SECURE / NO LEAKS";
+					pwnedStatus.style.color = "white";
+					pwnedStatus.style.background = "#28a745";
+				}
+				checkBtn.textContent = "Scan Complete";
+			};
+
+			resultDiv.onclick = () => {
+				if (currentPassword) {
+					navigator.clipboard.writeText(currentPassword);
+					copyHint.style.opacity = "1";
+					setTimeout(() => (copyHint.style.opacity = "0"), 1500);
+				}
+			};
+		</script>
+	</body>
+</html>
