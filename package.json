@@ -1,6 +1,6 @@
 {
 	"name": "secure-pwd-generator",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Enterprise-grade cryptographically secure password/passphrase generator",
 	"keywords": [
 		"typescript",
@@ -45,7 +45,7 @@
 		}
 	},
 	"bin": {
-		"pwd-gen": "./dist/cli.js"
+		"pwd-gen": "dist/cli.js"
 	},
 	"files": [
 		"dist"
