@@ -72,7 +72,7 @@
 		"@playwright/test": "^1.58.0",
 		"@types/node": "^25.0.10",
 		"@vitest/coverage-v8": "^4.0.18",
-		"commitlint": "^20.3.1",
+		"commitlint": "^20.4.2",
 		"eslint": "^9.39.2",
 		"husky": "^9.1.7",
 		"prettier": "3.8.1",
